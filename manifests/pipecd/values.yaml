@@ -186,6 +186,31 @@ prometheus:
             - source_labels: [__meta_kubernetes_pod_container_port_name]
               action: keep
               regex: envoy-admin
+          metric_relabel_configs:
+            - source_labels: [__name__]
+              target_label: method
+              regex: envoy_cluster_grpc_(.+)_success$
+              replacement: $1
+            - source_labels: [__name__]
+              target_label: __name__
+              regex: envoy_cluster_grpc_(.+)_success$
+              replacement: pipecd_success_requests_total
+            - source_labels: [__name__]
+              target_label: method
+              regex: envoy_cluster_grpc_(.+)_failure$
+              replacement: $1
+            - source_labels: [__name__]
+              target_label: __name__
+              regex: envoy_cluster_grpc_(.+)_failure$
+              replacement: pipecd_failure_requests_total
+            - source_labels: [__name__]
+              target_label: method
+              regex: envoy_cluster_grpc_(.+)_total$
+              replacement: $1
+            - source_labels: [__name__]
+              target_label: __name__
+              regex: envoy_cluster_grpc_(.+)_total$
+              replacement: pipecd_requests_total
 
         - job_name: pipecd-server
           scrape_interval: 1m

@@ -14,11 +14,11 @@ import {
 import { Close, SkipNext } from "@material-ui/icons";
 import clsx from "clsx";
 import { FC, memo, useCallback, useState } from "react";
+import { useSelector, TypedUseSelectorHook } from "react-redux";
 import Draggable from "react-draggable";
 import { APP_HEADER_HEIGHT } from "~/components/header";
 import {
   useAppDispatch,
-  useShallowEqualSelector,
   useAppSelector,
 } from "~/hooks/redux";
 import { clearActiveStage } from "~/modules/active-stage";
@@ -31,6 +31,7 @@ import {
   selectDeploymentStageIsSkippable,
   updateSkippableState,
 } from "~/modules/deployments";
+import type { AppState } from "~/store";
 import { selectStageLogById, StageLog } from "~/modules/stage-logs";
 import { Log } from "./log";
 
@@ -38,8 +39,15 @@ const INITIAL_HEIGHT = 400;
 const TOOLBAR_HEIGHT = 48;
 const ANALYSIS_STAGE_NAME = "ANALYSIS";
 
+const customEqual = (oldValue: any, newValue: any) => JSON.stringify(oldValue) === JSON.stringify(newValue)
+const useCustomSelector: TypedUseSelectorHook<AppState> = (
+  selector
+) => {
+  return useSelector(selector, customEqual);
+};
+
 function useActiveStageLog(): [Stage | null, StageLog | null] {
-  return useShallowEqualSelector<[Stage | null, StageLog | null]>((state) => {
+  return useCustomSelector<[Stage | null, StageLog | null]>((state) => {
     if (!state.activeStage) {
       return [null, null];
     }

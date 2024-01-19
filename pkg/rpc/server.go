@@ -153,6 +153,13 @@ func WithGRPCReflection() Option {
 	}
 }
 
+// MaxRecvMsgSize sets grpc port number.
+func WithMaxRecvMsgSize(maxRecvMsgSize int) Option {
+	return func(s *Server) {
+		s.maxRecvMsgSize = maxRecvMsgSize
+	}
+}
+
 // NewServer creates a new server for handling gRPC services.
 func NewServer(service Service, opts ...Option) *Server {
 	s := &Server{
